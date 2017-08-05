@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import java.util.List;
 
 /**
@@ -45,17 +47,6 @@ class UsersAdapter extends RecyclerView.Adapter
             personName = (TextView) itemView.findViewById(R.id.person_name);
             personInfo = (TextView) itemView.findViewById(R.id.person_age);
             personPhoto = (ImageView) itemView.findViewById(R.id.person_photo);
-
-            itemView.setOnClickListener(new View.OnClickListener()
-            {
-                @Override
-                public void onClick(View v)
-                {
-                    Intent myIntent = new Intent(v.getContext(), UserActivity.class);
-                    // Pass object through GSON
-                    v.getContext().startActivity(myIntent);
-                }
-            });
         }
     }
 
@@ -75,11 +66,24 @@ class UsersAdapter extends RecyclerView.Adapter
     }
 
     @Override
-    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position)
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, final int position)
     {
         UserViewHolder view = (UserViewHolder) holder;
         view.personName.setText(usersData.get(position).name);
         view.personInfo.setText(usersData.get(position).getInformation());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Intent myIntent = new Intent(v.getContext(), UserActivity.class);
+                // Pass object through GSON
+                Gson gson = new Gson();
+                myIntent.putExtra(UserActivity.USER, gson.toJson(usersData.get(position)));
+                v.getContext().startActivity(myIntent);
+            }
+        });
     }
 
     @Override
